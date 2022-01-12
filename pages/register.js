@@ -3,6 +3,7 @@ import React, { useState } from "react";
 export default function RegisterPage() {
   const [field, setField] = useState({});
   const [progress, setProgress] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   function setValue(e) {
     const target = e.target;
@@ -14,8 +15,6 @@ export default function RegisterPage() {
       ...field,
       [name]: value,
     });
-
-    console.log(field);
   }
 
   async function doRegister(e) {
@@ -30,14 +29,25 @@ export default function RegisterPage() {
     });
     const res = await req.json();
 
+
+    if (res.result === "success") {
+      setField({});
+      setSuccess(true);
+      e.target.reset();
+    }
     setProgress(false);
-    console.log(res);
   }
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-12">
       <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
         <h1 className="font-bold text-center text-2xl mb-5">Your Logo</h1>
+        {success && (
+          <div className="bg-green-500 text-white rounded mb-4 px-3 py-2">
+            Your account have been registered
+          </div>
+        )}
+
         <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
           <form onSubmit={doRegister} className="px-5 py-7" relative>
             {progress && <div className="absolute inset-0 z-10 bg-white/50" />}
