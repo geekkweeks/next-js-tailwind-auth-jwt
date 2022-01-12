@@ -2,22 +2,6 @@ import React, { useState } from "react";
 import nookies from "nookies";
 import Router from "next/router";
 
-export async function getServerSideProps(ctx){
-  //access cookies
-  const cookies = nookies.get(ctx)
-  if(cookies.token){
-    //redirect to dashboard page
-    return{
-      redirect:{
-        destination: '/dashboard'
-      }
-    }
-  }
-  return {
-    props: {}
-  }
-}
-
 export default function LoginPage() {
   const [field, setField] = useState({});
   const [progress, setProgress] = useState(false);
