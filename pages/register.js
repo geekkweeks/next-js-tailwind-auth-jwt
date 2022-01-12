@@ -1,4 +1,21 @@
 import React, { useState } from "react";
+import nookies from "nookies";
+
+export async function getServerSideProps(ctx) {
+  //access cookies
+  const cookies = nookies.get(ctx);
+  if (cookies.token) {
+    //redirect to dashboard page
+    return {
+      redirect: {
+        destination: "/dashboard",
+      },
+    };
+  }
+  return {
+    props: {},
+  };
+}
 
 export default function RegisterPage() {
   const [field, setField] = useState({});
@@ -28,7 +45,6 @@ export default function RegisterPage() {
       body: JSON.stringify(field),
     });
     const res = await req.json();
-
 
     if (res.result === "success") {
       setField({});

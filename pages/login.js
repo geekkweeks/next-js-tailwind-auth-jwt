@@ -1,12 +1,28 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import nookies from "nookies";
+import Router from "next/router";
+
+export async function getServerSideProps(ctx){
+  //access cookies
+  const cookies = nookies.get(ctx)
+  if(cookies.token){
+    //redirect to dashboard page
+    return{
+      redirect:{
+        destination: '/dashboard'
+      }
+    }
+  }
+  return {
+    props: {}
+  }
+}
 
 export default function LoginPage() {
-
   const [field, setField] = useState({});
   const [progress, setProgress] = useState(false);
   const [isError, setIsError] = useState(false);
-  
-  
+
   function setValue(e) {
     const target = e.target;
     const name = target.name;
@@ -14,29 +30,31 @@ export default function LoginPage() {
     setField({
       ...field,
       [name]: value,
-    });    
+    });
   }
 
-  async function doLogin(e){
+  async function doLogin(e) {
     e.preventDefault();
     setProgress(true);
-    const req = await fetch(`${process.env.NEXT_PUBLIC_URL}/login`,{
-      method: 'POST',
+    const req = await fetch(`${process.env.NEXT_PUBLIC_URL}/login`, {
+      method: "POST",
       headers: {
-        'content-type': 'application/json'
+        "content-type": "application/json",
       },
       body: JSON.stringify(field),
-    })
+    });
 
     const res = await req.json();
-    if(res.token){
-      console.log(res);
-    }else{
+    if (res.token) {
+      setIsError(false);
+      console.log(res.token);
+      nookies.set(null, "token", res.token);
+      Router.replace('/dashboard')
 
+    } else {
       setIsError(true);
     }
     setProgress(false);
-    
   }
 
   return (
